@@ -1,8 +1,34 @@
-# RAGAL — Implementation Guide
+# RAGAL — Risk-Aware Generative Active Learning
 
-## What's built so far
+Research implementation of a cold-start recommendation framework that combines LLM-based contrastive scoring, epistemic uncertainty, and risk-aware exploration.
 
-### `ragal/data_loaders.py` — Data Loading
+Paper: *Explore Safely, Learn Fast: Risk-Aware Cold-Start Recommendation with LLM Contrastive Scoring*
+
+## Setup
+
+**Python environment:**
+```bash
+python -m venv .venv
+source .venv/Scripts/activate   # or .venv\Scripts\activate on Windows cmd
+pip install -r requirements.txt
+```
+
+**Ollama (required for offline phase):**
+1. Install from https://ollama.com/download
+2. Start the server: `ollama serve` (leave running in a separate terminal)
+3. Pull a model: `ollama pull llama3.1:8b`
+
+Other supported models (pass via `--model`):
+
+| Model | Download size | RAM needed |
+|-------|--------------|-----------|
+| `llama3.1:8b` | ~4.7GB | ~8GB |
+| `gemma3:4b` | ~3GB | ~6GB |
+| `llama3.2:3b` | ~2GB | ~4GB |
+
+---
+
+## Data Loaders — `ragal/data_loaders.py`
 
 Loads three datasets into a common format.
 
@@ -17,9 +43,8 @@ Loads three datasets into a common format.
 |---------|--------|-------|-------|--------------------------|
 | MovieLens-1M | `load_movielens()` | 3,883 movies | 6,040 | Rating >= 4 = engaged |
 | Semantic Scholar | `load_semantic_scholar()` | 5,647 papers | 1,458 authors | Author wrote paper = engaged, random papers = skipped (3:1) |
-| Citation Network | `load_citation_network()` | Up to 100k (configurable) | Varies | Same as S2: author = user |
+| Citation Network (DBLP v12) | `load_citation_network()` | Up to 100k (configurable) | Varies | Same as S2: author = user |
 
-**Usage:**
 ```python
 from ragal.data_loaders import load_movielens, load_semantic_scholar, load_citation_network
 
@@ -36,131 +61,108 @@ print(ml.summary())
 python -m ragal.data_loaders
 ```
 
+**Persistence:** Datasets can be saved/loaded independently:
+```python
+ml.save("outputs/datasets/movielens")
+ml_loaded = Dataset.load("outputs/datasets/movielens")
+```
+
 ---
 
-### `ragal/offline.py` — Offline Phase
+## Offline Phase — `ragal/offline.py`
 
-Runs once per catalog. Produces a `CatalogStore` containing everything the online phase needs.
+Runs once per catalog. Both steps use the LLM via Ollama — no fallbacks.
 
 **Step 1 — Semantic Embeddings** (paper Section IV.C.1)
 
-A frozen LLM maps every item to a dense vector via Ollama's `/api/embed` endpoint.
-Vectors are L2-normalized and indexed into FAISS for ANN retrieval.
+> *"A frozen LLM or sentence encoder maps every item to a dense vector"*
 
-- Batched (64 items per request)
+- Calls Ollama `/api/embed` in batches of 64
+- Vectors are L2-normalized and indexed into FAISS (flat index for <4k items, IVF for larger)
 - Cached to `outputs/cache/embeddings/emb_{dataset}.npy`
-- Same model used across all datasets for consistent embedding space
 
 **Step 2 — Risk Scores R(a)** (paper Section IV.C.2)
 
-The LLM is prompted once per item:
-> "On a scale from 0 to 1, how risky is it to recommend this item to a complete stranger with no established taste profile?"
+> *"The LLM is prompted once per item: On a scale from 0 to 1, how risky is it to recommend this item to a complete stranger..."*
 
 - Produces a static lookup table `R: item_id -> [0, 1]`
+- R(a) ~ 0 = safe for anyone, R(a) ~ 1 = risky for strangers
 - Cached to `outputs/cache/risk/risk_{dataset}.json`
-- R(a) ≈ 0 means safe for anyone, R(a) ≈ 1 means risky for strangers
 
-**Usage:**
-```python
-from ragal.data_loaders import load_movielens
-from ragal.offline import build_catalog
+**Output:** A `CatalogStore` containing the dataset, FAISS item index, and risk scores — all saved to disk automatically.
 
-ds = load_movielens()
-catalog = build_catalog(ds, ollama_model="llama3.1:8b")
+### Running
 
-# catalog.item_index   — FAISS index + embeddings
-# catalog.risk_scores  — {item_id: float}
-# catalog.get_risk(item_id) — lookup helper
-```
-
-**CLI:**
 ```bash
-# Requires Ollama running: ollama serve (in another terminal)
-# Requires model pulled: ollama pull llama3.1:8b
+# Make sure Ollama is running with a model pulled
 
 python -m ragal.offline --dataset movielens --model llama3.1:8b
 python -m ragal.offline --dataset s2 --model llama3.1:8b
 python -m ragal.offline --dataset citation --model llama3.1:8b --max-papers 50000
 
-# Different model — use separate cache to avoid overwriting
+# Different model — use a separate cache dir
 python -m ragal.offline --dataset movielens --model gemma3:4b --cache-dir outputs/cache_gemma
 ```
 
-**Caching behavior:**
+### Loading a saved catalog
+
+```python
+from ragal.offline import CatalogStore
+
+# No Ollama needed — loads from disk
+catalog = CatalogStore.load("outputs/cache/catalogs/MovieLens-1M")
+
+catalog.dataset.summary()          # dataset stats
+catalog.item_index.query(vec, k=5) # ANN search
+catalog.get_risk("item_123")       # risk lookup
+```
+
+### What gets saved
+
+```
+outputs/cache/catalogs/{dataset_name}/
+  manifest.json              # metadata
+  dataset/
+    items.json               # all items (title, text, metadata)
+    interactions.npz         # (user_id, item_id, reward, timestamp) compressed
+    manifest.json            # dataset stats
+  item_index/
+    embeddings.npy           # (n_items, dim) L2-normalized float32
+    item_ids.json            # row index -> item_id mapping
+    index.faiss              # native FAISS serialized index
+  risk_scores.json           # {item_id: float} lookup table
+```
+
+### Caching behavior
+
 - Embeddings: cached by dataset name. If item IDs change, recomputes automatically.
-- Risk scores: cached by dataset name. New items get scored, existing scores are reused.
-- Switching models does NOT auto-invalidate cache — use `--cache-dir` to separate.
+- Risk scores: cached per item. New items get scored, existing scores are reused. Interrupted runs resume from where they left off.
+- Switching models does NOT auto-invalidate cache — use `--cache-dir` to keep them separate.
+
+### Time estimates
+
+Per item: embeddings are batched (fast), risk scoring is one LLM generation each (~1-3 sec). For MovieLens (3,883 items), risk scoring takes roughly 1-3 hours depending on hardware. Everything is cached, so re-runs are instant.
 
 ---
 
-## What's next — Online Phase
-
-The online phase runs per-user sequential replay. Three components to implement:
-
-### 1. ACS Scorer (`scoring.py`)
-
-Anchored Contrastive Scoring — the exploitation term.
-
-For each candidate item:
-- Find `x+` = closest liked item in user history (by embedding distance)
-- Find `x-` = closest skipped item in user history
-- Prompt the LLM: *"User engaged with [x+] but skipped [x-]. Is [candidate] more like what they engaged with or skipped?"*
-- Extract `P_ACS` from the LLM response (ENGAGED vs SKIPPED)
-- Cold-start fallback: when user has no positives or no negatives, ACS can't anchor contrastively
-
-### 2. SND Score (`scoring.py`)
-
-Semantic Neighborhood Disagreement — the exploration term.
-
-For each candidate item:
-- Retrieve k nearest already-rated items from the user's history
-- Count positives (`n+`) and negatives (`n-`) among them
-- `SND = min(n+, n-) / (max(n+, n-) + 1)`
-- Add ε-floor (0.05) when fewer than 2 neighbors exist (cold-start)
-
-No LLM needed — pure neighbor counting on the embedding space.
-
-### 3. Policy Runner (`policy.py`)
-
-Sequential offline replay loop:
-```
-for each user in test set:
-    for t = 1, 2, ..., max_steps:
-        1. Compute preference centroid from positive history
-        2. ANN retrieve top-M candidates, excluding seen items
-        3. Score each: Q = P_ACS + α·SND - λ·R(a)
-        4. Select a* = argmax Q
-        5. Observe reward from held-out ground truth
-        6. Update history
-```
-
-### 4. LinUCB Baseline (`baselines.py`)
-
-Standard contextual bandit baseline for comparison.
-
-### 5. Evaluation & Grid Search
-
-Metrics: `avg_reward`, `cumulative_reward`, `hitrate@10`, `ndcg@10`, `risky_exposure_rate`, `latency_ms`.
-
-Grid search over `α` (exploration weight) and `λ` (risk penalty weight).
-
----
-
-## Project structure
+## Project Structure
 
 ```
 ragal/
   __init__.py
-  data_loaders.py    # Dataset, Item, load_movielens, load_semantic_scholar, load_citation_network
-  offline.py         # ItemIndex, CatalogStore, build_catalog (LLM embeddings + FAISS + LLM risk)
-  scoring.py         # (TODO) ACSScorer, snd_score, compute_q_score
-  policy.py          # (TODO) run_policy, sequential replay loop
-  baselines.py       # (TODO) LinUCB
-  evaluate.py        # (TODO) metrics, grid search, report generation
+  data_loaders.py     # Dataset, Item, load_movielens, load_semantic_scholar, load_citation_network
+  offline.py          # ItemIndex, CatalogStore, build_catalog (LLM embeddings + FAISS + LLM risk)
 data/
-  movielens/ml-1m/   # ratings.dat, movies.dat, users.dat
-  semantic_scholar/   # recsys_complete_dataset.jsonl
-  citation_network/   # dblp.v12.json (12GB)
+  movielens/ml-1m/    # ratings.dat, movies.dat, users.dat
+  semantic_scholar/    # recsys_complete_dataset.jsonl (~5.6k papers)
+  citation_network/   # dblp.v12.json (~12GB, ~4.9M papers)
 outputs/
-  cache/              # LLM embedding + risk score caches
+  cache/              # LLM embedding + risk score caches + saved catalogs
+requirements.txt
 ```
+
+## Documentation
+
+- `framework_explanation.md` — full mathematical specification of the RAGAL framework with worked examples
+- `IMT2023094_RecSys_Report.pdf` / `RecSys_Report_latest.pdf` — project report
+- `references/` — academic PDFs (ACS, SND, harm mitigation research)
