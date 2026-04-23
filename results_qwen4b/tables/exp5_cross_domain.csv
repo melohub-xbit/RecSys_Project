@@ -1,0 +1,11 @@
+dataset,model,Recall@10,NDCG@10
+MovieLens-1M,LinUCB,0.0151,0.1626
+MovieLens-1M,ACS+SND+R(a),0.1289,0.5009
+MovieLens-20M,LinUCB,0.0216,0.1261
+MovieLens-20M,ACS+SND+R(a),0.1191,0.4968
+MovieLens-25M,LinUCB,0.0126,0.0543
+MovieLens-25M,ACS+SND+R(a),0.1563,0.5505
+SemanticScholar-bigger,LinUCB,0.1138,0.1109
+SemanticScholar-bigger,ACS+SND+R(a),0.1942,0.1715
+SemanticScholar-small,LinUCB,0.0333,0.0096
+SemanticScholar-small,ACS+SND+R(a),0.2623,0.1247

@@ -1,0 +1,11 @@
+dataset,model,first_step_skip_rate,cum_reward
+MovieLens-1M,With R(a) λ=0.3,0.4,5.1333
+MovieLens-1M,Without R(a) λ=0,0.4,5.1
+MovieLens-20M,With R(a) λ=0.3,0.4667,5.2667
+MovieLens-20M,Without R(a) λ=0,0.4333,5.2
+MovieLens-25M,With R(a) λ=0.3,0.5,5.1667
+MovieLens-25M,Without R(a) λ=0,0.5,5.0333
+SemanticScholar-bigger,With R(a) λ=0.3,0.8333,1.3
+SemanticScholar-bigger,Without R(a) λ=0,0.8333,1.3
+SemanticScholar-small,With R(a) λ=0.3,0.9,0.7667
+SemanticScholar-small,Without R(a) λ=0,0.9,0.8

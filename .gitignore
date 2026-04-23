@@ -10,5 +10,9 @@ IMT2023094_RecSys_Report.pdf
 
 *.zip
 
+*cache*/
+
 dblp.v12.json
+
+*.log
 
