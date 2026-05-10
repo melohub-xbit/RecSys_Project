@@ -1,0 +1,18 @@
+dataset,model,Recall@10
+MovieLens-1M,ACS,0.0369
+MovieLens-1M,SND,0.0216
+MovieLens-1M,R(a),0.0452
+MovieLens-1M,ACS+SND,0.0236
+MovieLens-1M,ACS+R(a),0.0454
+MovieLens-1M,SND+R(a),0.0455
+MovieLens-1M,ACS+SND+R(a),0.045
+MovieLens-1M,ACS+SND+R(a)+EASE,0.0511
+MovieLens-1M,ACS+SND+R(a) [EASE-nar],0.0386
+MovieLens-1M,ACS+SND+R(a)+EASE [EASE-nar],0.0454
+SemanticScholar-bigger,ACS,0.356
+SemanticScholar-bigger,SND,0.01
+SemanticScholar-bigger,R(a),0.025
+SemanticScholar-bigger,ACS+SND,0.0988
+SemanticScholar-bigger,ACS+R(a),0.1041
+SemanticScholar-bigger,SND+R(a),0.0239
+SemanticScholar-bigger,ACS+SND+R(a),0.0664

@@ -1,0 +1,73 @@
+dataset,model,k_reveal,Recall@10
+MovieLens-1M,Popularity-Safe,1,0.106
+MovieLens-1M,Popularity-Safe,2,0.1086
+MovieLens-1M,Popularity-Safe,3,0.1085
+MovieLens-1M,LinUCB,1,0.0194
+MovieLens-1M,LinUCB,2,0.0204
+MovieLens-1M,LinUCB,3,0.0202
+MovieLens-1M,SASRec,1,0.1376
+MovieLens-1M,SASRec,2,0.174
+MovieLens-1M,SASRec,3,0.1853
+MovieLens-1M,EASE,1,0.076
+MovieLens-1M,EASE,2,0.0713
+MovieLens-1M,EASE,3,0.076
+MovieLens-1M,ACS,1,0.1025
+MovieLens-1M,ACS,2,0.0639
+MovieLens-1M,ACS,3,0.0431
+MovieLens-1M,SND,1,0.0248
+MovieLens-1M,SND,2,0.0156
+MovieLens-1M,SND,3,0.0191
+MovieLens-1M,R(a),1,0.0534
+MovieLens-1M,R(a),2,0.0385
+MovieLens-1M,R(a),3,0.0418
+MovieLens-1M,ACS+SND,1,0.0478
+MovieLens-1M,ACS+SND,2,0.0324
+MovieLens-1M,ACS+SND,3,0.0267
+MovieLens-1M,ACS+R(a),1,0.0554
+MovieLens-1M,ACS+R(a),2,0.0425
+MovieLens-1M,ACS+R(a),3,0.0454
+MovieLens-1M,SND+R(a),1,0.0517
+MovieLens-1M,SND+R(a),2,0.0375
+MovieLens-1M,SND+R(a),3,0.0403
+MovieLens-1M,ACS+SND+R(a),1,0.0532
+MovieLens-1M,ACS+SND+R(a),2,0.041
+MovieLens-1M,ACS+SND+R(a),3,0.0432
+MovieLens-1M,ACS+SND+R(a)+EASE,1,0.0799
+MovieLens-1M,ACS+SND+R(a)+EASE,2,0.0548
+MovieLens-1M,ACS+SND+R(a)+EASE,3,0.0531
+MovieLens-1M,ACS+SND+R(a) [EASE-nar],1,0.0303
+MovieLens-1M,ACS+SND+R(a) [EASE-nar],2,0.0351
+MovieLens-1M,ACS+SND+R(a) [EASE-nar],3,0.0443
+MovieLens-1M,ACS+SND+R(a)+EASE [EASE-nar],1,0.0465
+MovieLens-1M,ACS+SND+R(a)+EASE [EASE-nar],2,0.0468
+MovieLens-1M,ACS+SND+R(a)+EASE [EASE-nar],3,0.0511
+SemanticScholar-bigger,Popularity-Safe,1,0.0583
+SemanticScholar-bigger,Popularity-Safe,2,0.0592
+SemanticScholar-bigger,Popularity-Safe,3,0.0589
+SemanticScholar-bigger,LinUCB,1,0.0231
+SemanticScholar-bigger,LinUCB,2,0.0224
+SemanticScholar-bigger,LinUCB,3,0.0275
+SemanticScholar-bigger,SASRec,1,0.662
+SemanticScholar-bigger,SASRec,2,0.6348
+SemanticScholar-bigger,SASRec,3,0.6795
+SemanticScholar-bigger,ACS,1,0.2243
+SemanticScholar-bigger,ACS,2,0.2703
+SemanticScholar-bigger,ACS,3,0.2731
+SemanticScholar-bigger,SND,1,0.0048
+SemanticScholar-bigger,SND,2,0.008
+SemanticScholar-bigger,SND,3,0.0176
+SemanticScholar-bigger,R(a),1,0.0307
+SemanticScholar-bigger,R(a),2,0.0259
+SemanticScholar-bigger,R(a),3,0.0276
+SemanticScholar-bigger,ACS+SND,1,0.0015
+SemanticScholar-bigger,ACS+SND,2,0.0519
+SemanticScholar-bigger,ACS+SND,3,0.0738
+SemanticScholar-bigger,ACS+R(a),1,0.0325
+SemanticScholar-bigger,ACS+R(a),2,0.069
+SemanticScholar-bigger,ACS+R(a),3,0.1013
+SemanticScholar-bigger,SND+R(a),1,0.0164
+SemanticScholar-bigger,SND+R(a),2,0.0181
+SemanticScholar-bigger,SND+R(a),3,0.0313
+SemanticScholar-bigger,ACS+SND+R(a),1,0.0186
+SemanticScholar-bigger,ACS+SND+R(a),2,0.0554
+SemanticScholar-bigger,ACS+SND+R(a),3,0.0815

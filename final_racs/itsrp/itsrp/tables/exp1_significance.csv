@@ -1,0 +1,23 @@
+dataset,model,k_reveal,baseline,wilcoxon_p_recall
+MovieLens-1M,LinUCB,5,Popularity-Safe,0.0
+MovieLens-1M,SASRec,5,Popularity-Safe,0.0
+MovieLens-1M,EASE,5,Popularity-Safe,8e-05
+MovieLens-1M,ACS,5,Popularity-Safe,0.0
+MovieLens-1M,SND,5,Popularity-Safe,0.0
+MovieLens-1M,R(a),5,Popularity-Safe,0.0
+MovieLens-1M,ACS+SND,5,Popularity-Safe,0.0
+MovieLens-1M,ACS+R(a),5,Popularity-Safe,0.0
+MovieLens-1M,SND+R(a),5,Popularity-Safe,0.0
+MovieLens-1M,ACS+SND+R(a),5,Popularity-Safe,0.0
+MovieLens-1M,ACS+SND+R(a)+EASE,5,Popularity-Safe,0.0
+MovieLens-1M,ACS+SND+R(a) [EASE-nar],5,Popularity-Safe,0.0
+MovieLens-1M,ACS+SND+R(a)+EASE [EASE-nar],5,Popularity-Safe,0.0
+SemanticScholar-bigger,LinUCB,5,Popularity-Safe,0.517957
+SemanticScholar-bigger,SASRec,5,Popularity-Safe,0.0
+SemanticScholar-bigger,ACS,5,Popularity-Safe,0.0
+SemanticScholar-bigger,SND,5,Popularity-Safe,0.029627
+SemanticScholar-bigger,R(a),5,Popularity-Safe,0.389195
+SemanticScholar-bigger,ACS+SND,5,Popularity-Safe,0.027901
+SemanticScholar-bigger,ACS+R(a),5,Popularity-Safe,0.048184
+SemanticScholar-bigger,SND+R(a),5,Popularity-Safe,0.255581
+SemanticScholar-bigger,ACS+SND+R(a),5,Popularity-Safe,0.486842
