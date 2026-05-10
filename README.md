@@ -1,4 +1,4 @@
-# RACS: Risk-Aware Generative Alignment for Cold-Start Recommendation
+# RACS: Risk-Aware Cold-Start Recommendation with LLM Contrastive Scoring
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
@@ -54,18 +54,6 @@ Rescale the risk scores to a uniform [0, 1] distribution to ensure the risk pena
 python -m ksai.calibrate_risk --cache-dir /PATH/TO/CACHE
 ```
 
-### 3. Online Phase (Running Experiments)
-Run the full suite of experiments (Cold-start tables, Learning curves, Ablation studies, etc.).
-
-```bash
-python -m ksai.run_online \
-    --linux \
-    --cache-dir /PATH/TO/CACHE \
-    --results-dir /PATH/TO/RESULTS \
-    --model meta-llama/Llama-3.1-8B-Instruct \
-    --device cuda --dtype float16 \
-    --eval-seeds 0 1 2 3 4
-```
 
 ## 📊 Experimental Suite
 The system includes 6 built-in experiments:
