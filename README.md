@@ -65,16 +65,6 @@ The system includes 6 built-in experiments:
 5. **Cross-Domain Consistency:** Testing robustness across different datasets.
 6. **Risk-Recall Trade-off:** Sweeping λ to find the optimal safety-accuracy balance.
 
-## 📝 Citation
-If you use this work in your research, please cite:
-
-```bibtex
-@article{patil2026racs,
-  title={RACS: Risk-Aware Generative Alignment for Cold-Start Recommendation},
-  author={Patil, Areen and Parsania, Ramya and Velidanda, Krishna Sai},
-  year={2026}
-}
-```
 
 ## ⚖️ License
 This project is licensed under the MIT License - see the LICENSE file for details.
