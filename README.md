@@ -5,14 +5,14 @@
 
 RACS is a powerful recommender system framework designed to tackle **extreme cold-start scenarios** (where user history is very limited) using Large Language Models (LLMs). It balances user preference alignment with safety and uncertainty-driven exploration.
 
-## 🚀 Key Features
+##  Key Features
 * **ACS (Alignment Contrastive Scoring):** Uses LLMs (like Llama 3.1) to contrastively rank items by simulating user engagement.
 * **SND (Semantic Neighborhood Disagreement):** A Bayesian approach to measure semantic uncertainty, acting as an epistemic exploration bonus.
 * **Risk-Awareness:** Implements a safety constraint that penalizes items with high risk scores (e.g., polarizing or unsafe content).
 * **Plug-and-Play Baselines:** Includes high-performance baselines like **EASE**, **SASRec**, and **ItemKNN** for rigorous benchmarking.
 * **Multi-Seed Evaluation:** Comprehensive experimental harness reporting mean ± std, bootstrap CIs, and paired Wilcoxon p-values.
 
-## 🛠️ Installation
+##  Installation
 ```bash
 # Clone the repository
 git clone [https://github.com/YOUR_USERNAME/racs.git](https://github.com/YOUR_USERNAME/racs.git)
@@ -23,7 +23,7 @@ pip install torch transformers faiss-gpu numpy pandas matplotlib scikit-learn tq
 ```
 *Note: For the fastest performance, we recommend using a GPU and installing flash-attn.*
 
-## 📂 Project Structure
+##  Project Structure
 ```text
 ksai/
 ├── online.py           # Core RACS algorithm logic (ACS, SND, Risk)
@@ -38,7 +38,7 @@ ksai/
 └── final_report.tex    # LaTeX source for the research report
 ```
 
-## 📖 Usage Guide
+##  Usage Guide
 
 ### 1. Offline Phase (Embedding & Risk Scoring)
 First, generate item embeddings and calculate initial risk scores for your dataset.
@@ -55,7 +55,7 @@ python -m ksai.calibrate_risk --cache-dir /PATH/TO/CACHE
 ```
 
 
-## 📊 Experimental Suite
+##  Experimental Suite
 The system includes 6 built-in experiments:
 
 1. **Main Cold-Start Table:** Comparison of RACS against all baselines.
@@ -66,5 +66,5 @@ The system includes 6 built-in experiments:
 6. **Risk-Recall Trade-off:** Sweeping λ to find the optimal safety-accuracy balance.
 
 
-## ⚖️ License
+##  License
 This project is licensed under the MIT License - see the LICENSE file for details.
